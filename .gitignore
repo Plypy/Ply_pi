@@ -1,0 +1,10 @@
+.projectile
+*.sublime-*
+*~
+
+# project specific
+kernel.img
+kernel.list
+kernel.map
+
+build/*
