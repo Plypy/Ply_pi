@@ -20,3 +20,6 @@ assembler will first put these constant in memory and then use `ldr reg,
 
 Also there is no `rol reg, n` for armv6, but you can simpy use `ror reg, 32-n`,
 same thing.
+
+### The Screen0X series
+It's `.align 12` instead of `.align 4` in the `framebuffer.s`.
