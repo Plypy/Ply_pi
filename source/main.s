@@ -11,41 +11,50 @@ main:
 /* init */
         mov sp, #0x8000
 
-        pinNum .req r0
-        pinFunc .req r1
-        mov pinNum, #47     @ set the GPIO47 as output mode
-        mov pinFunc, #1
-        bl SetGpioFunction
-        .unreq pinNum
-        .unreq pinFunc
+        mov r0, #1024
+        mov r1, #768
+        mov r2, #16
+        bl InitialiseFrameBuffer
 
-/* load the pattern */
-        ptrn .req r4
-        ldr ptrn, =pattern
-        ldr ptrn, [ptrn]
-        mask .req r5
-        mov mask, #1
-loop$:
+        teq r0, #0
+        bne noError$
 
-/* light on it */
-        pinNum .req r0
-        pinVal .req r1
-/* get info bit */
-        mov pinNum, #47
-        mov pinVal, mask
-        and pinVal, ptrn
-
+        mov r0, #47
+        mov r1, #1
+        bl  SetGpioFunction
+        mov r0, #47
+        mov r1, #1
         bl SetGpio
 
-        ldr r0, =500000
-        bl Wait
+error$:
+        b error$
 
-        ror mask, #31
+noError$:
+        fbInfoAddr .req r4
+        mov fbInfoAddr, r0
 
-b loop$;
+render$:
+        fbAddr .req r3
+        ldr fbAddr, [fbInfoAddr, #32]
 
-/* data */
-        .section .data
-        .align 2
-pattern:
-        .int 0b11111111101010100010001000101010
+        colour .req r0
+        y .req r1
+        mov y, #768
+drawRow$:
+        x .req r2
+        mov x, #1024
+drawPixel$:
+        strh colour, [fbAddr]
+        add fbAddr, #2
+        sub x, #1
+        teq x, #0
+        bne drawPixel$
+
+        sub y, #1
+        add colour, #1
+        teq y, #0
+        bne drawRow$
+
+        b render$
+        .unreq fbAddr
+        .unreq fbInfoAddr

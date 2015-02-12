@@ -1,6 +1,8 @@
+# editor craps
 .projectile
 *.sublime-*
 *~
+\#*\#
 
 # project specific
 kernel.img
