@@ -39,6 +39,7 @@ render$:
 
         colour .req r0
         y .req r1
+        mov colour, #0
         mov y, #768
 drawRow$:
         x .req r2
@@ -46,12 +47,12 @@ drawRow$:
 drawPixel$:
         strh colour, [fbAddr]
         add fbAddr, #2
+        add colour, #1
         sub x, #1
         teq x, #0
         bne drawPixel$
 
         sub y, #1
-        add colour, #1
         teq y, #0
         bne drawRow$
 
